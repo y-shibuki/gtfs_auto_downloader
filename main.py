@@ -18,12 +18,14 @@ import subprocess
 import glob
 import time
 
+TIME_INTERVAL = 20
 
 if __name__ == "__main__":
     print("取得を開始します")
     # 20秒ごとに実行
     # Ctrl + Cを押さない限り、実行し続ける
     while True:
+        start_time = time.time()
         # Crawlerフォルダの下にある.pyファイルを実行
         for crawler_file in glob.glob("./Crawler/*.py"):
             try:
@@ -31,4 +33,5 @@ if __name__ == "__main__":
             except subprocess.CalledProcessError as e:
                 print(e)
 
+        
         time.sleep(20)
