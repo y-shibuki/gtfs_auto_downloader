@@ -8,30 +8,70 @@ Crawlerフォルダの下にある.pyファイルを、定期的に実行し続�
 ・バックグラウンドで実行
 nohup python main.py > output_log/out.log &
 ・実行状況の確認
-ps u
+ps x
 ・実行を止める
-PIDにはps uで確認したプロセスIDを記入
+PIDにはps xで確認したプロセスIDを記入
 kill -KILL PID
 """
 
 import subprocess
 import glob
 import time
+import datetime
+from collections import defaultdict
 
-TIME_INTERVAL = 20
+
+def crawlers_20():
+    # Crawlerフォルダの下にある.pyファイルを実行
+    for crawler_file in glob.glob("./Crawler/20/*.py"):
+        try:
+            subprocess.run(["python", crawler_file], check=True)
+        except subprocess.CalledProcessError as e:
+            print(e)
+
+def crawlers_60():
+    # Crawlerフォルダの下にある.pyファイルを実行
+    for crawler_file in glob.glob("./Crawler/60/*.py"):
+        try:
+            subprocess.run(["python", crawler_file], check=True)
+        except subprocess.CalledProcessError as e:
+            print(e)
+
+def crawlers_120():
+    # Crawlerフォルダの下にある.pyファイルを実行
+    for crawler_file in glob.glob("./Crawler/120/*.py"):
+        try:
+            subprocess.run(["python", crawler_file], check=True)
+        except subprocess.CalledProcessError as e:
+            print(e)
+
+def wait_until_min():
+    now = datetime.datetime.now()
+    time.sleep(60 - now.second - datetime.datetime.now().microsecond / 10**6)
+
+def wait_until_sec(interval=1):
+    time.sleep(interval - datetime.datetime.now().microsecond / 10**6)
+
+intervals = {
+    crawlers_20: 20,
+    crawlers_60: 60,
+    crawlers_120: 120
+}
+
+last_execution = defaultdict(int)
+INTERVAL = 1
 
 if __name__ == "__main__":
-    print("取得を開始します")
-    # 20秒ごとに実行
-    # Ctrl + Cを押さない限り、実行し続ける
-    while True:
-        start_time = time.time()
-        # Crawlerフォルダの下にある.pyファイルを実行
-        for crawler_file in glob.glob("./Crawler/*.py"):
-            try:
-                subprocess.run(["python", crawler_file], check=True)
-            except subprocess.CalledProcessError as e:
-                print(e)
+    # 開始時刻を0.000秒に揃える
+    wait_until_min()
 
-        
-        time.sleep(20)
+    while True:
+        print(datetime.datetime.now())
+        current_time = time.time()
+        for func, interval in intervals.items():
+            if current_time - last_execution[func] >= interval:
+                last_execution[func] = time.time()
+                func()
+
+        # 開始時刻をx.000秒に揃える
+        wait_until_sec(interval=INTERVAL)
