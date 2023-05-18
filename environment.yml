@@ -1,9 +1,0 @@
-name: gtfs_auto_downloader
-channels: 
-  - conda-forge
-dependencies:
-  - python=3.10
-  - requests
-  - protobuf
-  - pip:
-    - gtfs-realtime-bindings

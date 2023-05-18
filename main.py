@@ -6,7 +6,7 @@ Crawlerフォルダの下にある.pyファイルを、定期的に実行し続�
 処理を中止する際には、ターミナルでCtrl + Cを押してください。
 
 ・バックグラウンドで実行
-nohup python main.py > log/out.log 2> error.log&
+nohup python main.py > log/out.log 2> log/error.log &
 ・実行状況の確認
 ps x
 ・実行を止める

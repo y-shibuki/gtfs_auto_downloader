@@ -1,0 +1,13 @@
+[tool.poetry]
+name = "gtfs-auto-downloader"
+version = "0.1.0"
+description = ""
+authors = ["Hinata Yoshida <h-yoshida@toki.waseda.jp>"]
+
+[tool.poetry.dependencies]
+python = "3.11.3"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
