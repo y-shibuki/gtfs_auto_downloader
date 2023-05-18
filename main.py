@@ -22,32 +22,15 @@ from collections import defaultdict
 import os
 
 
-def crawlers_20():
+def crawlers(folder_path):
     # Crawlerフォルダの下にある.pyファイルを実行
-    for crawler_file in glob.glob("./Crawler/20/*.py"):
+    for crawler_file in glob.glob(folder_path):
         try:
             subprocess.run(["python", crawler_file], check=True)
             print(f"{os.path.splitext(os.path.basename(crawler_file))[0]},OK")
         except subprocess.CalledProcessError as e:
             print(f"{os.path.splitext(os.path.basename(crawler_file))[0]},NG")
 
-def crawlers_60():
-    # Crawlerフォルダの下にある.pyファイルを実行
-    for crawler_file in glob.glob("./Crawler/60/*.py"):
-        try:
-            subprocess.run(["python", crawler_file], check=True)
-            print(f"{os.path.splitext(os.path.basename(crawler_file))[0]},OK")
-        except subprocess.CalledProcessError as e:
-            print(f"{os.path.splitext(os.path.basename(crawler_file))[0]},NG")
-
-def crawlers_120():
-    # Crawlerフォルダの下にある.pyファイルを実行
-    for crawler_file in glob.glob("./Crawler/120/*.py"):
-        try:
-            subprocess.run(["python", crawler_file], check=True)
-            print(f"{os.path.splitext(os.path.basename(crawler_file))[0]},OK")
-        except subprocess.CalledProcessError as e:
-            print(f"{os.path.splitext(os.path.basename(crawler_file))[0]},NG")
 
 def wait_until_min():
     now = datetime.datetime.now()
@@ -57,9 +40,9 @@ def wait_until_sec(interval=1):
     time.sleep(interval - datetime.datetime.now().microsecond / 10**6)
 
 intervals = {
-    crawlers_20: 20,
-    crawlers_60: 60,
-    crawlers_120: 120
+    "./Crawler/20/*.py": 20,
+    "./Crawler/60/*.py": 60,
+    "./Crawler/120/*.py": 120
 }
 
 last_execution = defaultdict(int)
@@ -71,10 +54,10 @@ if __name__ == "__main__":
 
     while True:
         current_time = time.time()
-        for func, interval in intervals.items():
-            if round(current_time - last_execution[func]) >= interval:
-                last_execution[func] = time.time()
-                func()
+        for folder_path, interval in intervals.items():
+            if round(current_time - last_execution[folder_path]) >= interval:
+                last_execution[folder_path] = time.time()
+                crawlers(folder_path)
 
         # 開始時刻をx.000秒に揃える
         wait_until_sec(interval=INTERVAL)
