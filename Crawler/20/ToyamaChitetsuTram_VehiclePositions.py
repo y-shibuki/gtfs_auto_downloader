@@ -1,5 +1,7 @@
 import datetime
 import os
+import warnings
+warnings.simplefilter('error')
 
 from google.transit import gtfs_realtime_pb2
 from google.protobuf import json_format
@@ -27,5 +29,3 @@ if __name__ == "__main__":
 
     with open(f"{folder_path}/{date.strftime('%H%M%S')}.json", 'w', encoding="utf-8") as f:
         json.dump(d, f, indent=2, ensure_ascii=False)
-
-    print(operator, data_type, "OK")

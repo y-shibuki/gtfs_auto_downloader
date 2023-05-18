@@ -6,7 +6,7 @@ Crawlerフォルダの下にある.pyファイルを、定期的に実行し続�
 処理を中止する際には、ターミナルでCtrl + Cを押してください。
 
 ・バックグラウンドで実行
-nohup python main.py > output_log/out.log &
+nohup python main.py > log/out.log 2> error.log&
 ・実行状況の確認
 ps x
 ・実行を止める
@@ -19,6 +19,7 @@ import glob
 import time
 import datetime
 from collections import defaultdict
+import os
 
 
 def crawlers_20():
@@ -26,24 +27,27 @@ def crawlers_20():
     for crawler_file in glob.glob("./Crawler/20/*.py"):
         try:
             subprocess.run(["python", crawler_file], check=True)
+            print(f"{os.path.splitext(os.path.basename(crawler_file))[0]},OK")
         except subprocess.CalledProcessError as e:
-            print(e)
+            print(f"{os.path.splitext(os.path.basename(crawler_file))[0]},NG")
 
 def crawlers_60():
     # Crawlerフォルダの下にある.pyファイルを実行
     for crawler_file in glob.glob("./Crawler/60/*.py"):
         try:
             subprocess.run(["python", crawler_file], check=True)
+            print(f"{os.path.splitext(os.path.basename(crawler_file))[0]},OK")
         except subprocess.CalledProcessError as e:
-            print(e)
+            print(f"{os.path.splitext(os.path.basename(crawler_file))[0]},NG")
 
 def crawlers_120():
     # Crawlerフォルダの下にある.pyファイルを実行
     for crawler_file in glob.glob("./Crawler/120/*.py"):
         try:
             subprocess.run(["python", crawler_file], check=True)
+            print(f"{os.path.splitext(os.path.basename(crawler_file))[0]},OK")
         except subprocess.CalledProcessError as e:
-            print(e)
+            print(f"{os.path.splitext(os.path.basename(crawler_file))[0]},NG")
 
 def wait_until_min():
     now = datetime.datetime.now()
@@ -66,10 +70,9 @@ if __name__ == "__main__":
     wait_until_min()
 
     while True:
-        print(datetime.datetime.now())
         current_time = time.time()
         for func, interval in intervals.items():
-            if current_time - last_execution[func] >= interval:
+            if round(current_time - last_execution[func]) >= interval:
                 last_execution[func] = time.time()
                 func()
 
