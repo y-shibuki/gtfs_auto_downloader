@@ -28,7 +28,7 @@ def crawlers(folder_path):
         try:
             subprocess.run(["python", crawler_file], check=True)
             print(f"{os.path.splitext(os.path.basename(crawler_file))[0]},OK")
-        except subprocess.CalledProcessError as e:
+        except subprocess.CalledProcessError:
             print(f"{os.path.splitext(os.path.basename(crawler_file))[0]},NG")
 
 
@@ -36,13 +36,15 @@ def wait_until_min():
     now = datetime.datetime.now()
     time.sleep(60 - now.second - datetime.datetime.now().microsecond / 10**6)
 
+
 def wait_until_sec(interval=1):
     time.sleep(interval - datetime.datetime.now().microsecond / 10**6)
+
 
 intervals = {
     "./Crawler/20/*.py": 20,
     "./Crawler/60/*.py": 60,
-    "./Crawler/120/*.py": 120
+    "./Crawler/120/*.py": 120,
 }
 
 last_execution = defaultdict(int)
