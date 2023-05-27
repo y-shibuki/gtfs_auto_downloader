@@ -15,7 +15,7 @@ import json
 # https://opendata.pref.toyama.jp/pages/gtfs_jp.htm
 if __name__ == "__main__":
     operator = "富山地鉄バス"
-    data_type = "VehiclePositions.pb"
+    data_type = "VehiclePositions"
     date = datetime.datetime.now()
     folder_path = f"./data/{operator}/{data_type}/{date.strftime('%Y年%m月%d日')}"
 
