@@ -6,6 +6,9 @@ authors = ["Hinata Yoshida <h-yoshida@toki.waseda.jp>"]
 
 [tool.poetry.dependencies]
 python = "3.11.3"
+requests = "^2.31.0"
+protobuf = "^4.23.2"
+gtfs-realtime-bindings = "^1.0.0"
 
 
 [build-system]
