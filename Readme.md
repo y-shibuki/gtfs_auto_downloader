@@ -39,8 +39,8 @@ make install
 5. cronの設定
 ```
 crontab -e
-* * * * * for i in 0 20 40; do (sleep ${i}; $HOME/gtfs_auto_downloader/main.sh crawler 20) & done;
-*/1 * * * * $HOME/gtfs_auto_downloader/main.sh crawler 60;
-*/2 * * * * $HOME/gtfs_auto_downloader/main.sh crawler 120;
-* 9 * * * $HOME/gtfs_auto_downloader/main.sh compress;
+* * * * * for i in 0 20 40; do (sleep ${i}; bash $HOME/gtfs_auto_downloader/main.sh crawler 20) & done;
+*/1 * * * * bash $HOME/gtfs_auto_downloader/main.sh crawler 60;
+*/2 * * * * bash $HOME/gtfs_auto_downloader/main.sh crawler 120;
+* 9 * * * bash $HOME/gtfs_auto_downloader/main.sh compress;
 ```
