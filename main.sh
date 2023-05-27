@@ -1,3 +1,4 @@
+cd "$(dirname "$0")"
 source ./.venv/bin/activate
 
 if [ "$1" = "crawler" ]; then
