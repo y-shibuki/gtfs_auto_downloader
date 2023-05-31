@@ -5,20 +5,15 @@ source ./.venv/bin/activate
 source ./.env.local
 
 if [ "$1" = "crawler" ]; then
-    if [ $2 -eq 20 ]; then
-        python3 20.py
-    elif [ $2 -eq 60 ]; then
-        python3 60.py
-    elif [ $2 -eq 120 ]; then
-        python3 120.py
-    fi
+    python3 ./src/crawl.py $2
 elif [ "$1" = "compress" ]; then
-    python3 compress.py
+    python3 ./src/compress.py
 elif [ "$1" == "download" ]; then
     sftp -i $SFTP_IDENTITY_PATH -oPort=$SFTP_PORT $SFTP_USER@$SFTP_IP <<END
+    lmkdir -p ./data
     lcd ./data
     cd "$SFTP_REMOTE_FOLDER/data"
-    get *
+    get -r *
     exit
 END
 fi
