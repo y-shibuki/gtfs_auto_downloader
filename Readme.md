@@ -1,6 +1,6 @@
 # GTFS Auto Downloader
 ## 導入手順
-1. pyenvを導入
+1. pyenvを導入  
 ```
 sudo apt install build-essential libbz2-dev libdb-dev \
   libreadline-dev libffi-dev libgdbm-dev liblzma-dev \
@@ -17,7 +17,7 @@ pyenv -v
 # ここでバージョンが表示されたら成功
 pyenv install 3.11.3
 ```
-2. poetryを導入
+2. poetryを導入  
 ```
 curl -sSL https://install.python-poetry.org | python3 -
 echo 'export PATH="/home/******/.local/bin:$PATH"' >> ~/.bashrc
@@ -26,21 +26,21 @@ poetry --version
 # ここでバージョンが表示されたら成功
 poetry config virtualenvs.in-project true
 ```
-3. gtfs_auto_downloaderのclone
+3. gtfs_auto_downloaderのclone  
 ```
 cd /home/******/
 git clone https://github.com/y-shibuki/gtfs_auto_downloader.git
 ```
-4. 環境設定
+4. 環境設定  
 ```
 pyenv local 3.11.3
 poetry env use 3.11.3
 poetry install
 ```
 ## サーバーに定期的にデータを保存する手順
-1. 環境変数の設定
+1. 環境変数の設定  
 ```.env.local```に各種APIのライセンスキーを入力
-2. cronの設定
+2. cronの設定  
 ```
 crontab -e
 * * * * * for i in 0 20 40; do (sleep ${i}; bash $HOME/gtfs_auto_downloader/main.sh crawler 20) & done;
@@ -50,8 +50,8 @@ crontab -e
 ```
 ## サーバーに保管しているデータをローカルにダウンロードする手順
 1. ```.env.local```に、SFTPの通信に必要な情報を記入してください。  
-2. ```bash main.sh download```でダウンロードができます。
-3. ```cron```で毎日ダウンロードするようにするのが良いでしょう。
+2. ```bash main.sh download```でダウンロードができます。  
+3. ```cron```で毎日ダウンロードするようにするのが良いでしょう。  
 
 ## 構造
 ### フォルダ構造
