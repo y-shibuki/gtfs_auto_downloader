@@ -34,7 +34,8 @@ git clone https://github.com/y-shibuki/gtfs_auto_downloader.git
 4. 環境設定
 ```
 pyenv local 3.11.3
-make install
+poetry env use 3.11.3
+poetry install
 ```
 5. cronの設定
 ```
