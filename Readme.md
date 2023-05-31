@@ -54,6 +54,23 @@ crontab -e
 ## 構造
 ### フォルダ構造
 ```
+├── main.sh
+└── src
+    ├── Crawler
+    │   ├── 120
+    │   │   ├── KantoBus_TripUpdate.py
+    │   │   └── KantoBus_VehiclePosition.py
+    │   ├── 20
+    │   │   ├── ToyamaChitetsuBus_TripUpdates.py
+    │   │   ├── ToyamaChitetsuBus_VehiclePositions.py
+    │   │   ├── ToyamaChitetsuTram_TripUpdates.py
+    │   │   └── ToyamaChitetsuTram_VehiclePositions.py
+    │   └── 60
+    │       ├── Docomo_GBFS.py
+    │       └── Hello_GBFS.py
+    ├── compress.py
+    ├── crawl.py
+    └── decompress.py
 ```
 ### main.shの使い方
 ```
