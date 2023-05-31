@@ -44,3 +44,7 @@ crontab -e
 */2 * * * * bash $HOME/gtfs_auto_downloader/main.sh crawler 120;
 * 9 * * * bash $HOME/gtfs_auto_downloader/main.sh compress;
 ```
+## サーバーに保管しているデータをSFTP転送でダウンロードする手順
+1. ```.env.local```に、SFTPの通信に必要な情報を記入してください。  
+2. ```bash main.sh download```でダウンロードができます。
+3. ```cron```で毎日ダウンロードするようにするのが良いでしょう。

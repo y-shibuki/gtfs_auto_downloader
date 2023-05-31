@@ -2,5 +2,6 @@ data/
 log/
 zip/
 .venv
+.env.local
 .DS_Store
 __pycache__
