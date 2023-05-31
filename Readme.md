@@ -1,6 +1,6 @@
 # GTFS Auto Downloader
 ## 概念図
-![image](images/GTFS_Auto_Downloaderの概要.png)
+![GTFS_Auto_Downloaderの概要](https://github.com/y-shibuki/gtfs_auto_downloader/assets/12867630/842e1a8f-5907-48c7-90db-7aad09939453)
 ## 導入手順
 1. pyenvを導入  
 ```
