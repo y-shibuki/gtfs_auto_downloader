@@ -82,7 +82,7 @@ main.sh compress
 >> dataフォルダ内のデータを圧縮する
 
 main.sh decompress
->> dataフォルダ内のデータを解凍する
+>> zipフォルダ内のデータを解凍する
 
 main.sh download
 >> サーバーからSFTP通信でデータをダウンロードする
