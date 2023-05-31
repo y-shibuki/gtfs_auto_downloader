@@ -38,7 +38,9 @@ poetry env use 3.11.3
 poetry install
 ```
 ## サーバーに定期的にデータを保存する手順
-1. cronの設定
+1. 環境変数の設定
+```.env.local```に各種APIのライセンスキーを入力
+2. cronの設定
 ```
 crontab -e
 * * * * * for i in 0 20 40; do (sleep ${i}; bash $HOME/gtfs_auto_downloader/main.sh crawler 20) & done;

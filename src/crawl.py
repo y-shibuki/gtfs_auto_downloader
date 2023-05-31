@@ -8,11 +8,14 @@ Crawlerフォルダの下にある.pyファイルを、定期的に実行し続�
 >> crawl.py 20
 """
 
-import subprocess
 import glob
 import os
+import subprocess
 import sys
+import dotenv
 
+# 環境変数の読み込み
+dotenv.load_dotenv("./.env.local")
 
 if __name__ == "__main__":
     if not os.path.exists(f"./src/Crawler/{sys.argv[1]}/"):
