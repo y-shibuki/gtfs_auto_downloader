@@ -18,8 +18,7 @@ elif [ "$1" == "download" ]; then
     sftp -i $SFTP_IDENTITY_PATH -oPort=$SFTP_PORT $SFTP_USER@$SFTP_IP <<END
     lcd ./data
     cd "$SFTP_REMOTE_FOLDER/data"
-    pwd
-    lpwd
+    get *
     exit
 END
 fi
