@@ -1,5 +1,5 @@
 # GTFS Auto Downloader
-## 使い方
+## 導入手順
 1. pyenvを導入
 ```
 sudo apt install build-essential libbz2-dev libdb-dev \
@@ -37,7 +37,8 @@ pyenv local 3.11.3
 poetry env use 3.11.3
 poetry install
 ```
-5. cronの設定
+## サーバーに定期的にデータを保存する手順
+1. cronの設定
 ```
 crontab -e
 * * * * * for i in 0 20 40; do (sleep ${i}; bash $HOME/gtfs_auto_downloader/main.sh crawler 20) & done;
@@ -45,7 +46,27 @@ crontab -e
 */2 * * * * bash $HOME/gtfs_auto_downloader/main.sh crawler 120;
 * 9 * * * bash $HOME/gtfs_auto_downloader/main.sh compress;
 ```
-## サーバーに保管しているデータをSFTP転送でダウンロードする手順
+## サーバーに保管しているデータをローカルにダウンロードする手順
 1. ```.env.local```に、SFTPの通信に必要な情報を記入してください。  
 2. ```bash main.sh download```でダウンロードができます。
 3. ```cron```で毎日ダウンロードするようにするのが良いでしょう。
+
+## 構造
+### フォルダ構造
+```
+```
+### main.shの使い方
+```
+main.sh crawler n
+n: 実行間隔（秒数）
+>> src/Crawler/nのフォルダ内にあるクローラーを実行する
+
+main.sh compress
+>> dataフォルダ内のデータを圧縮する
+
+main.sh decompress
+>> dataフォルダ内のデータを解凍する
+
+main.sh download
+>> サーバーからSFTP通信でデータをダウンロードする
+```
