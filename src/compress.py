@@ -21,7 +21,7 @@ if __name__ == "__main__":
 
         try:
             # tarfileに圧縮
-            with tarfile.open(f"./zip/{folder_path}.tar.xz", "w:xz") as f:
+            with tarfile.open(f"./zip/{folder_path}.tar.gz", "w:gz") as f:
                 for path in glob.glob(f"./data/*/*/{folder_path}"):
                     f.add(path)
         finally:
