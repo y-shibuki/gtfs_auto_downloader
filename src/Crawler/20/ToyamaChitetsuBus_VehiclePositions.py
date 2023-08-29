@@ -1,13 +1,14 @@
 import datetime
 import os
 import warnings
+
 warnings.simplefilter('error')
 
-from google.transit import gtfs_realtime_pb2
-from google.protobuf import json_format
-import requests
 import json
 
+import requests
+from google.protobuf import json_format
+from google.transit import gtfs_realtime_pb2
 
 # 富山県バス情報データ（GTFS-JP、GTFS-RT）
 # とやまロケーションシステムで使用しているデータを、標準的なバス情報フォーマットに準じた形式で公開しています。
@@ -15,7 +16,7 @@ import json
 # https://opendata.pref.toyama.jp/pages/gtfs_jp.htm
 if __name__ == "__main__":
     operator = "富山地鉄バス"
-    data_type = "VehiclePositions"
+    data_type = "VehiclePosition"
     date = datetime.datetime.now()
     folder_path = f"./data/{operator}/{data_type}/{date.strftime('%Y年%m月%d日')}"
 
