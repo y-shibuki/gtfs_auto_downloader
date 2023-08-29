@@ -1,14 +1,13 @@
 import datetime
+import json
 import os
 import warnings
-
-warnings.simplefilter('error')
-
-import json
 
 import requests
 from google.protobuf import json_format
 from google.transit import gtfs_realtime_pb2
+
+warnings.simplefilter('error')
 
 # 富山県バス情報データ（GTFS-JP、GTFS-RT）
 # とやまロケーションシステムで使用しているデータを、標準的なバス情報フォーマットに準じた形式で公開しています。
