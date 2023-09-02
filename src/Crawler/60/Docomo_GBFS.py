@@ -1,11 +1,11 @@
 import datetime
+import json
 import os
 import warnings
-warnings.simplefilter('error')
 
 import requests
-import json
 
+warnings.simplefilter('error')
 
 # ドコモバイク（GBFS）
 # https://ckan.odpt.org/dataset/c_bikeshare_gbfs-d-bikeshare

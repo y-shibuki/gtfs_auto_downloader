@@ -1,8 +1,8 @@
-import tarfile
 import datetime
-import os
 import glob
+import os
 import shutil
+import tarfile
 
 if __name__ == "__main__":
     if not os.path.exists("./zip"):
