@@ -2,13 +2,23 @@ import glob
 import os
 import tarfile
 
+import dotenv
+
+# 環境変数の読み込み
+dotenv.load_dotenv("./.env.local")
+
 if __name__ == "__main__":
-    if not os.path.exists("./data"):
-        os.makedirs("./data")
+    folder_path = os.environ.get("FOLDER_PATH") or "."
+
+    if not os.path.exists(f"{folder_path}/zip"):
+        raise FileNotFoundError(f"{folder_path}/zip")
+
+    if not os.path.exists(f"{folder_path}/data"):
+        os.makedirs(f"{folder_path}/data")
 
     for path in glob.glob("./zip/*.tar.gz"):
         try:
             with tarfile.open(path, 'r:gz') as tar:
-                tar.extractall()
+                tar.extractall(path=folder_path)
         finally:
             os.remove(path)
