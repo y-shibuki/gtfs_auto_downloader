@@ -11,16 +11,9 @@ elif [ "$1" = "compress" ]; then
 elif [ "$1" = "decompress" ]; then
     python3 ./src/decompress.py
 elif [ "$1" == "download" ]; then
-    sftp -i $SFTP_IDENTITY_PATH -oPort=$SFTP_PORT $SFTP_USER@$SFTP_IP <<END
-    lmkdir -p ./zip
-    lcd ./zip
-    cd "$SFTP_REMOTE_FOLDER/zip"
-    get *
-    exit
-END
+    rsync -av -e "ssh -i $SFTP_IDENTITY_PATH -oPort=$SFTP_PORT" $SFTP_USER@$SFTP_IP:$SFTP_REMOTE_FOLDER/zip/ $FOLDER_PATH/zip
 else
     echo "コマンドが不明です"
 fi
-
 
 deactivate
