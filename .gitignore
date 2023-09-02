@@ -4,5 +4,5 @@ zip/
 .venv
 .env.local
 .DS_Store
-.pem
+*.pem
 __pycache__
