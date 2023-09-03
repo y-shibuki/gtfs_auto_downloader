@@ -16,7 +16,7 @@ if __name__ == "__main__":
     if not os.path.exists(f"{folder_path}/data"):
         os.makedirs(f"{folder_path}/data")
 
-    for path in glob.glob("./zip/*.tar.gz"):
+    for path in glob.glob(f"{folder_path}/zip/*.tar.gz"):
         try:
             with tarfile.open(path, 'r:gz') as tar:
                 tar.extractall(path=folder_path)
