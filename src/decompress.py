@@ -1,4 +1,5 @@
 import glob
+import gzip
 import os
 import tarfile
 
@@ -20,5 +21,7 @@ if __name__ == "__main__":
         try:
             with tarfile.open(path, 'r:gz') as tar:
                 tar.extractall(path=folder_path)
+        except gzip.BadGzipFile:
+            print("gzファイルが破損しています。")
         finally:
             os.remove(path)

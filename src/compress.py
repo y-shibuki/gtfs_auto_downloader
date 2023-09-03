@@ -24,6 +24,8 @@ if __name__ == "__main__":
             with tarfile.open(f"./zip/{folder_path}.tar.gz", "w:gz") as f:
                 for path in glob.glob(f"./data/*/*/{folder_path}"):
                     f.add(path)
+        except FileNotFoundError:
+            print("圧縮に失敗しました。ファイルが存在しません。")
         finally:
             # 圧縮に成功したら削除
             for path in glob.glob(f"./data/*/*/{folder_path}"):
