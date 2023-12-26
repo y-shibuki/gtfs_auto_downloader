@@ -1,8 +1,13 @@
+# データをアップロードすると重くなってしまうので
 data/
 log/
 zip/
-.venv
+
+# 環境変数
+# API_KEYなどはGitHubに公開しないように
 .env.local
-.DS_Store
 *.pem
+
+# 不要なファイル・フォルダ
+.DS_Store
 __pycache__
