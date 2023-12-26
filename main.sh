@@ -1,6 +1,8 @@
 #!/bin/bash
-
+echo pwd
+echo "$(dirname "$0")"
 cd "$(dirname "$0")"
+echo pwd
 source ./.venv/bin/activate
 source ./.env.local
 
