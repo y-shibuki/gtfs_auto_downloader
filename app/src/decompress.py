@@ -5,8 +5,12 @@ import tarfile
 
 import dotenv
 
+from utils.logger import getLogger
+
 # 環境変数の読み込み
 dotenv.load_dotenv("./.env.local")
+
+logger = getLogger(__name__)
 
 if __name__ == "__main__":
     folder_path = os.environ.get("FOLDER_PATH") or "."
@@ -22,6 +26,6 @@ if __name__ == "__main__":
             with tarfile.open(path, 'r:gz') as tar:
                 tar.extractall(path=folder_path)
         except:
-            print("gzファイルが破損しています。")
+            logger.warning("gzファイルが破損しています。")
         else:
             os.remove(path)

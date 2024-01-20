@@ -4,8 +4,10 @@ import os
 import warnings
 
 import requests
+from utils.logger import getLogger
 
-warnings.simplefilter('error')
+logger = getLogger(__name__)
+warnings.simplefilter("error")
 
 # ドコモバイク（GBFS）
 # https://ckan.odpt.org/dataset/c_bikeshare_gbfs-d-bikeshare
@@ -21,7 +23,11 @@ if __name__ == "__main__":
     if not os.path.exists(folder_path):
         os.makedirs(folder_path)
 
-    with requests.get(f"https://api.odpt.org/api/v4/gbfs/docomo-cycle-tokyo/station_status.json?acl:consumerKey={API_KEY}") as response:
+    with requests.get(
+        f"https://api.odpt.org/api/v4/gbfs/docomo-cycle-tokyo/station_status.json?acl:consumerKey={API_KEY}"
+    ) as response:
         d = json.loads(response.text)
-    with open(f"{folder_path}/{date.strftime('%H%M%S')}.json", 'w', encoding="utf-8") as f:
+    with open(
+        f"{folder_path}/{date.strftime('%H%M%S')}.json", "w", encoding="utf-8"
+    ) as f:
         json.dump(d, f, indent=2, ensure_ascii=False)

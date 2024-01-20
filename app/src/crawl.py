@@ -15,18 +15,22 @@ import sys
 
 import dotenv
 
+from utils.logger import getLogger
+
 # 環境変数の読み込み
 dotenv.load_dotenv("./.env.local")
 
+logger = getLogger(__name__)
+
 if __name__ == "__main__":
     if not os.path.exists(f"./src/Crawler/{sys.argv[1]}/"):
-        print("パスが存在しません")
-        exit
+        logger.error("パスが存在しません")
+        exit()
 
     # Crawlerフォルダの下にある.pyファイルを実行
     for crawler_file in glob.glob(f"./src/Crawler/{sys.argv[1]}/*.py"):
         try:
             subprocess.run(["python", crawler_file], check=True)
-            print(f"{os.path.splitext(os.path.basename(crawler_file))[0]},OK")
+            logger.info(f"{os.path.splitext(os.path.basename(crawler_file))[0]},OK")
         except subprocess.CalledProcessError:
-            print(f"{os.path.splitext(os.path.basename(crawler_file))[0]},NG")
+            logger.warning(f"{os.path.splitext(os.path.basename(crawler_file))[0]},NG")
