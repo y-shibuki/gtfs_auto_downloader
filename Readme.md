@@ -24,7 +24,7 @@ sudo apt install -y curl git rsync openssh-client build-essential
 # プロジェクトのクローン
 cd /home/$(whoami)/
 git clone https://github.com/y-shibuki/gtfs_auto_downloader.git
-cd gtfs_rt_crawler
+cd gtfs_auto_downloader
 
 # (未インストールの場合は）Homebrewのインストール
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
