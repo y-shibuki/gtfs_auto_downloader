@@ -50,15 +50,9 @@ vim .env.local
 `.env.local`に設定が必要な項目：
 
 ```bash
-# SFTP設定（データダウンロード用）
-SFTP_USER=your_username
-SFTP_IP=your_server_ip
-SFTP_PORT=22
-SFTP_IDENTITY_PATH=/path/to/your/ssh/key
-SFTP_REMOTE_FOLDER=/remote/path/to/data
-FOLDER_PATH=/local/path/to/store/data
-
 # API キー（各種GTFS RTフィード用）
+PTD_HS_KEY=
+ODPT_KEY=
 ```
 
 ### 4. 動作確認
@@ -90,7 +84,7 @@ task decompress    # データ解凍
 task download      # リモートサーバーからダウンロード
 ```
 
-### systemd管理
+### systemd 管理
 
 ```bash
 task systemd:setup:crawler    # Crawlerサービス作成
@@ -150,8 +144,21 @@ task systemd:stop:all
 
 リモートサーバーからデータをダウンロードする手順：
 
-1. `.env.local`にSFTP接続情報を設定
-2. `task download`でデータダウンロードを実行
+### 1. `.env.local`に SFTP 接続情報を設定
+
+`.env.local`に設定が必要な項目：
+
+```bash
+# SFTP設定（データダウンロード用）
+SFTP_USER=your_username
+SFTP_IP=your_server_ip
+SFTP_PORT=22
+SFTP_IDENTITY_PATH=/path/to/your/ssh/key
+SFTP_REMOTE_FOLDER=/remote/path/to/data
+FOLDER_PATH=/local/path/to/store/data
+```
+
+### 2. `task download`でデータダウンロードを実行
 
 ## プロジェクト構造
 
