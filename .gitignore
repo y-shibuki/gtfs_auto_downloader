@@ -11,3 +11,7 @@ zip/
 # 不要なファイル・フォルダ
 .DS_Store
 __pycache__
+
+# uv関連
+.venv/
+uv.lock
