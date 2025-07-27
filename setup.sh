@@ -9,80 +9,18 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_DIR="$SCRIPT_DIR"
 SERVICE_USER="$USER"
 
-# 色付きの出力用
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-YELLOW='\033[1;33m'
-NC='\033[0m' # No Color
-
-print_info() {
-    echo -e "${GREEN}[INFO]${NC} $1"
-}
-
-print_warning() {
-    echo -e "${YELLOW}[WARNING]${NC} $1"
-}
-
-print_error() {
-    echo -e "${RED}[ERROR]${NC} $1"
+log() {
+    local level="$1"
+    local message="$2"
+    echo "[$level] $message"
 }
 
 usage() {
-    echo "Usage: $0 [crawler|downloader]"
-    echo ""
-    echo "Arguments:"
-    echo "  crawler     Setup systemd timers for data crawling (20s, 60s, 120s, 1day intervals)"
-    echo "  downloader  Setup systemd timer for downloading data from server"
-    echo ""
-    echo "Example:"
-    echo "  $0 crawler     # Setup crawler timers"
-    echo "  $0 downloader  # Setup downloader timer"
+    log "INFO" "Usage: $0 [crawler|downloader]"
+    log "INFO" "Commands:"
+    log "INFO" "  crawler     Setup crawler services and timers"
+    log "INFO" "  downloader  Setup downloader service and timer"
     exit 1
-}
-
-check_requirements() {
-    print_info "Checking requirements..."
-    
-    # Check if systemctl is available
-    if ! command -v systemctl &> /dev/null; then
-        print_error "systemctl is not available. This script requires systemd."
-        exit 1
-    fi
-    
-    # Check if uv is installed
-    if ! command -v uv &> /dev/null; then
-        print_error "uv is not installed. Please install uv first."
-        exit 1
-    fi
-    
-    # Check if task is installed
-    if ! command -v task &> /dev/null; then
-        print_error "Task is not installed. Please install Task first."
-        print_info "Installation: brew install go-task"
-        print_info "Or see: https://taskfile.dev/installation/"
-        exit 1
-    fi
-    
-    # Get task executable path
-    TASK_PATH=$(which task)
-    if [ -z "$TASK_PATH" ]; then
-        print_error "Task executable not found in PATH."
-        exit 1
-    fi
-    
-    # Check if project directory exists
-    if [ ! -d "$PROJECT_DIR/app" ]; then
-        print_error "Project directory structure is invalid. Expected app/ directory not found."
-        exit 1
-    fi
-    
-    # Check if Taskfile.yml exists
-    if [ ! -f "$PROJECT_DIR/Taskfile.yml" ]; then
-        print_error "Taskfile.yml not found in project directory."
-        exit 1
-    fi
-    
-    print_info "Requirements check passed."
 }
 
 create_service_file() {
@@ -91,108 +29,141 @@ create_service_file() {
     local exec_command="$3"
     
     local service_file="/etc/systemd/system/${service_name}.service"
-    
-    print_info "Creating service file: $service_file"
-    
-    sudo tee "$service_file" > /dev/null <<EOF
+
+    log "INFO" "Creating service file: $service_file"
+
+    sudo tee "$service_file" <<EOF > /dev/null
 [Unit]
 Description=$description
-After=network.target
 
 [Service]
-Type=oneshot
+Type=simple
 User=$SERVICE_USER
-WorkingDirectory=$PROJECT_DIR/app
-Environment=PATH=/home/$SERVICE_USER/.local/bin:\$PATH
 ExecStart=$exec_command
-StandardOutput=journal
-StandardError=journal
 
 [Install]
 WantedBy=multi-user.target
 EOF
     
-    print_info "Service file created: $service_file"
+    log "INFO" "Service file created: $service_file"
+}
+
+create_timer_file() {
+    local timer_name="$1"
+    local description="$2"
+    local on_calendar="$3"
+    
+    local timer_file="/etc/systemd/system/${timer_name}.timer"
+
+    log "INFO" "Creating timer file: $timer_file"
+
+    sudo tee "$timer_file" <<EOF > /dev/null
+[Unit]
+Description=$description
+Requires=${timer_name}.service
+
+[Timer]
+OnCalendar=$on_calendar
+
+[Install]
+WantedBy=timers.target
+EOF
+    
+    log "INFO" "Timer file created: $timer_file"
 }
 
 setup_crawler_services() {
-    print_info "Setting up crawler services..."
+    log "INFO" "Setting up crawler services..."
     
     # Create services for different intervals
     create_service_file "gtfs-crawler-20s" \
         "GTFS RT Crawler (20 second interval)" \
-        "$TASK_PATH -d $PROJECT_DIR crawler:20s"
+        "task -d $PROJECT_DIR crawler:20s"
+    create_timer_file "gtfs-crawler-20s" \
+        "GTFS RT Crawler Timer (20 second interval)" \
+        "*:*:0/20"
     
     create_service_file "gtfs-crawler-60s" \
         "GTFS RT Crawler (60 second interval)" \
-        "$TASK_PATH -d $PROJECT_DIR crawler:60s"
+        "task -d $PROJECT_DIR crawler:60s"
+    create_timer_file "gtfs-crawler-60s" \
+        "GTFS RT Crawler Timer (60 second interval)" \
+        "*:*:0/60"
     
     create_service_file "gtfs-crawler-120s" \
         "GTFS RT Crawler (120 second interval)" \
-        "$TASK_PATH -d $PROJECT_DIR crawler:120s"
+        "task -d $PROJECT_DIR crawler:120s"
+    create_timer_file "gtfs-crawler-120s" \
+        "GTFS RT Crawler Timer (120 second interval)" \
+        "*:*:0/120"
     
     create_service_file "gtfs-crawler-1day" \
         "GTFS RT Crawler (1 day interval)" \
-        "$TASK_PATH -d $PROJECT_DIR crawler:1day"
+        "task -d $PROJECT_DIR crawler:1day"
+    create_timer_file "gtfs-crawler-1day" \
+        "GTFS RT Crawler Timer (1 day interval)" \
+        "daily"
     
     # Create compress service
     create_service_file "gtfs-compress" \
         "GTFS Data Compression" \
-        "$TASK_PATH -d $PROJECT_DIR compress"
+        "task -d $PROJECT_DIR compress"
+    create_timer_file "gtfs-compress" \
+        "GTFS Data Compression Timer" \
+        "daily"
     
-    print_info "Crawler services created successfully."
-    print_warning "Timer files (.timer) need to be created separately."
-    print_info "Services created:"
-    echo "  - gtfs-crawler-20s.service"
-    echo "  - gtfs-crawler-60s.service" 
-    echo "  - gtfs-crawler-120s.service"
-    echo "  - gtfs-crawler-1day.service"
-    echo "  - gtfs-compress.service"
+    log "INFO" "Crawler services and timers created successfully."
+    log "INFO" "Services and timers created:
+  - gtfs-crawler-20s.service / gtfs-crawler-20s.timer
+  - gtfs-crawler-60s.service / gtfs-crawler-60s.timer
+  - gtfs-crawler-120s.service / gtfs-crawler-120s.timer
+  - gtfs-crawler-1day.service / gtfs-crawler-1day.timer
+  - gtfs-compress.service / gtfs-compress.timer"
 }
 
 setup_downloader_service() {
-    print_info "Setting up downloader service..."
+    log "INFO" "Setting up downloader service..."
     
     create_service_file "gtfs-downloader" \
         "GTFS Data Downloader" \
-        "$TASK_PATH -d $PROJECT_DIR download"
+        "task -d $PROJECT_DIR download"
+    create_timer_file "gtfs-downloader" \
+        "GTFS Data Downloader Timer" \
+        "daily"
     
-    print_info "Downloader service created successfully."
-    print_warning "Timer file (.timer) needs to be created separately."
-    print_info "Service created:"
-    echo "  - gtfs-downloader.service"
+    log "INFO" "Downloader service and timer created successfully."
+    log "INFO" "Service and timer created:
+  - gtfs-downloader.service / gtfs-downloader.timer"
 }
 
-reload_systemd() {
-    print_info "Reloading systemd daemon..."
-    sudo systemctl daemon-reload
-    print_info "Systemd daemon reloaded."
-}
 
-main() {
-    if [ $# -ne 1 ]; then
-        print_error "Invalid number of arguments."
+if [ $# -ne 1 ]; then
+    log "ERROR" "Invalid number of arguments."
+    usage
+fi
+
+case "$1" in
+    "crawler")
+        setup_crawler_services
+        sudo systemctl daemon-reload
+        log "INFO" "Crawler setup completed successfully."
+        log "INFO" "To enable and start timers, run:
+  sudo systemctl enable --now gtfs-crawler-20s.timer
+  sudo systemctl enable --now gtfs-crawler-60s.timer
+  sudo systemctl enable --now gtfs-crawler-120s.timer
+  sudo systemctl enable --now gtfs-crawler-1day.timer
+  sudo systemctl enable --now gtfs-compress.timer"
+        log "INFO" "Or use: task systemd:enable:all"
+        ;;
+    "downloader")
+        setup_downloader_service
+        sudo systemctl daemon-reload
+        log "INFO" "Downloader setup completed successfully."
+        log "INFO" "To enable and start timer, run:
+  sudo systemctl enable --now gtfs-downloader.timer"
+        ;;
+    *)
+        log "ERROR" "Invalid argument: $1"
         usage
-    fi
-    
-    case "$1" in
-        "crawler")
-            check_requirements
-            setup_crawler_services
-            reload_systemd
-            print_info "Crawler setup completed successfully."
-            ;;
-        "downloader")
-            check_requirements
-            setup_downloader_service
-            reload_systemd
-            print_info "Downloader setup completed successfully."
-            ;;
-        *)
-            print_error "Invalid argument: $1"
-            usage
-            ;;
-    esac
-}
-
-main "$@"
+        ;;
+esac
