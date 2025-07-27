@@ -13,25 +13,7 @@ tasks:
     cmds:
       - brew install uv pre-commit
       - uv sync
-      - chmod +x app/main.sh
       - chmod +x setup.sh
-      - chmod +x timer-examples.sh
-
-  crawler:
-    desc: Run GTFS RT crawler with specified interval
-    summary: |
-      Run GTFS Realtime crawler for specified interval.
-      
-      Usage:
-        task crawler -- 20    # Run 20-second interval crawlers
-        task crawler -- 60    # Run 60-second interval crawlers
-        task crawler -- 120   # Run 120-second interval crawlers
-        task crawler -- 1day  # Run 1-day interval crawlers
-    dir: app
-    cmds:
-      - uv run python -m src.crawl {{.CLI_ARGS}}
-    requires:
-      vars: [CLI_ARGS]
 
   crawler:20s:
     desc: Run 20-second interval crawler
@@ -71,16 +53,6 @@ tasks:
 
   download:
     desc: Download data from remote server via SFTP
-    summary: |
-      Download compressed data from remote server using SFTP.
-      
-      Required environment variables:
-        - SFTP_USER: SFTP username
-        - SFTP_IP: SFTP server IP address
-        - SFTP_PORT: SFTP server port
-        - SFTP_IDENTITY_PATH: Path to SSH private key
-        - SFTP_REMOTE_FOLDER: Remote folder path
-        - FOLDER_PATH: Local folder path to store downloaded data
     dir: app
     cmds:
       - |
@@ -104,24 +76,15 @@ tasks:
       - sh: '[ -f "$SFTP_IDENTITY_PATH" ]'
         msg: "SSH identity file not found at $SFTP_IDENTITY_PATH"
 
-  dev:test:
-    desc: Test crawler with 20-second interval (for development)
-    dir: app
-    cmds:
-      - echo "Testing crawler with 20-second interval..."
-      - timeout 60s uv run python -m src.crawl 20 || echo "Test completed"
-
   systemd:setup:crawler:
     desc: Setup systemd services for crawler
     cmds:
       - sudo ./setup.sh crawler
-      - echo "Crawler systemd services created successfully"
 
   systemd:setup:downloader:
     desc: Setup systemd services for downloader
     cmds:
       - sudo ./setup.sh downloader
-      - echo "Downloader systemd service created successfully"
 
   systemd:enable:all:
     desc: Enable all systemd timers
@@ -132,19 +95,11 @@ tasks:
       - sudo systemctl enable --now gtfs-crawler-1day.timer
       - sudo systemctl enable --now gtfs-compress.timer
       - sudo systemctl enable --now gtfs-downloader.timer
-      - echo "All systemd timers enabled successfully"
 
   systemd:status:
     desc: Show status of all systemd timers
     cmds:
       - sudo systemctl list-timers --all | grep gtfs
-
-  systemd:logs:
-    desc: Show logs for specified service (use -- service-name)
-    cmds:
-      - sudo journalctl -u {{.CLI_ARGS}} -f
-    requires:
-      vars: [CLI_ARGS]
 
   systemd:stop:all:
     desc: Stop and disable all systemd timers
@@ -162,39 +117,3 @@ tasks:
       - sudo systemctl disable gtfs-compress.timer || true
       - sudo systemctl disable gtfs-downloader.timer || true
       - echo "All systemd timers stopped and disabled"
-
-  help:
-    desc: Show detailed help information
-    cmds:
-      - |
-        echo "GTFS RT Crawler Task Commands"
-        echo "============================="
-        echo ""
-        echo "Development:"
-        echo "  task dev:setup          - Setup development environment"
-        echo "  task dev:test           - Test crawler (60 seconds)"
-        echo "  task install            - Install dependencies"
-        echo ""
-        echo "Data Operations:"
-        echo "  task crawler -- 20      - Run 20-second interval crawler"
-        echo "  task crawler:20s        - Run 20-second interval crawler"
-        echo "  task crawler:60s        - Run 60-second interval crawler"
-        echo "  task crawler:120s       - Run 120-second interval crawler"
-        echo "  task crawler:1day       - Run 1-day interval crawler"
-        echo "  task compress           - Compress collected data"
-        echo "  task decompress         - Decompress archived data"
-        echo "  task download           - Download data from remote server"
-        echo ""
-        echo "Systemd Management:"
-        echo "  task systemd:setup:crawler    - Create crawler systemd services"
-        echo "  task systemd:setup:downloader - Create downloader systemd service"
-        echo "  task systemd:enable:all       - Enable all systemd timers"
-        echo "  task systemd:status           - Show timer status"
-        echo "  task systemd:logs -- <service> - Show service logs"
-        echo "  task systemd:stop:all         - Stop all timers"
-        echo ""
-        echo "Maintenance:"
-        echo "  task clean              - Clean up generated files"
-        echo "  task lint               - Run linting checks"
-        echo ""
-        echo "For more details: task --list"
