@@ -1,7 +1,7 @@
 [project]
-name = "gtfs_rt_crawler"
+name = "gtfs_auto_downloader"
 version = "0.1.0"
-description = "GTFS Realtime data crawler"
+description = "GTFS Realtime Data Auto Downloader"
 authors = [{name = "y-shibuki"}]
 readme = "Readme.md"
 requires-python = ">=3.11"
@@ -10,7 +10,7 @@ dependencies = [
     "protobuf==4.23.2",
     "gtfs-realtime-bindings==1.0.0",
     "python-dotenv==1.0.0",
-    "pandas==2.0.3",
+    "pandas==2.3.1",
 ]
 
 [build-system]
