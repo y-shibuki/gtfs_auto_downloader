@@ -30,8 +30,6 @@ create_service_file() {
     
     local service_file="/etc/systemd/system/${service_name}.service"
 
-    log "INFO" "Creating service file: $service_file"
-
     sudo tee "$service_file" <<EOF > /dev/null
 [Unit]
 Description=$description
@@ -54,8 +52,6 @@ create_timer_file() {
     local on_calendar="$3"
     
     local timer_file="/etc/systemd/system/${timer_name}.timer"
-
-    log "INFO" "Creating timer file: $timer_file"
 
     sudo tee "$timer_file" <<EOF > /dev/null
 [Unit]
@@ -113,12 +109,6 @@ setup_crawler_services() {
         "daily"
     
     log "INFO" "Crawler services and timers created successfully."
-    log "INFO" "Services and timers created:
-  - gtfs-crawler-20s.service / gtfs-crawler-20s.timer
-  - gtfs-crawler-60s.service / gtfs-crawler-60s.timer
-  - gtfs-crawler-120s.service / gtfs-crawler-120s.timer
-  - gtfs-crawler-1day.service / gtfs-crawler-1day.timer
-  - gtfs-compress.service / gtfs-compress.timer"
 }
 
 setup_downloader_service() {
